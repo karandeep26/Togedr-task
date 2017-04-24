@@ -35,6 +35,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_MOBILE_NO = "mobile";
     private static final String KEY_HOME_NO ="home";
     private static final String KEY_OFFICE_NO ="office";
+    private static final String KEY_GENDER="gender";
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -46,6 +47,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_CONTACTS + "("
                 + KEY_ID + " TEXT PRIMARY KEY," + KEY_NAME + " TEXT,"
                 +KEY_ADDRESS+" TEXT,"
+                +KEY_GENDER+" TEXT,"
                 +KEY_Email+" TEXT,"+ KEY_MOBILE_NO +" TEXT,"+ KEY_OFFICE_NO +" TEXT,"
                 + KEY_HOME_NO + " TEXT)";
         db.execSQL(CREATE_CONTACTS_TABLE);
@@ -74,6 +76,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_HOME_NO, contact.getPhone().getHome()); // Contact Phone
         values.put(KEY_ID,contact.getId());
         values.put(KEY_ADDRESS,contact.getAddress());
+        values.put(KEY_GENDER,contact.getGender());
         values.put(KEY_OFFICE_NO,contact.getPhone().getOffice());
         values.put(KEY_Email,contact.getEmail());
         values.put(KEY_MOBILE_NO,contact.getPhone().getMobile());
@@ -101,11 +104,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 contact.setId(cursor.getString(0));
                 contact.setName(cursor.getString(1));
                 contact.setAddress(cursor.getString(2));
-                contact.setEmail(cursor.getString(3));
+                contact.setGender(cursor.getString(3));
+                contact.setEmail(cursor.getString(4));
+
                 Contact.Phone phone=new Contact.Phone();
-                phone.setMobile(cursor.getString(4));
-                phone.setHome(cursor.getString(5));
+                phone.setMobile(cursor.getString(5));
                 phone.setOffice(cursor.getString(6));
+                phone.setHome(cursor.getString(7));
                 contact.setPhone(phone);
                 // Adding contact to list
                 contactList.add(contact);
@@ -127,10 +132,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String countQuery = "SELECT  * FROM " + TABLE_CONTACTS;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
+        int count=cursor.getCount();
         cursor.close();
 
         // return count
-        return cursor.getCount();
+        return count;
     }
+
 
 }
